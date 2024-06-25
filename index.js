@@ -83,7 +83,7 @@ function req(url) {
     })
     .catch((e) => {
       fail++;
-      console.error(e);
+      console.error(arg, e);
       return url;
     });
 }
