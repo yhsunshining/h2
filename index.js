@@ -63,6 +63,8 @@ function req(url) {
               text
             );
             fail++;
+          } else {
+            success++;
           }
         } catch (e) {
           fail++;
@@ -96,7 +98,13 @@ async function run() {
 
 async function runParallel() {
   setInterval(() => {
-    console.log(arg, `fail: ${fail} success:${success}`);
+    console.log(
+      arg,
+      `fail: ${fail} success:${success} rate: ${(
+        fail /
+        (success + fail)
+      ).toFixed(2)}`
+    );
   }, 10000);
   while (true) {
     try {
