@@ -117,11 +117,7 @@ async function runParallel() {
   }, 10000);
   while (true) {
     try {
-      const res = await Promise.all(
-        Object.values(data)
-          .slice(0, 2)
-          .map((url) => req(url))
-      );
+      const res = await Promise.all(Object.values(data).map((url) => req(url)));
       disconnect(res[0]);
     } catch (e) {
       console.log(e);
