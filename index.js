@@ -1,12 +1,16 @@
 const data = require("./data.json");
-const fetch_h2 = require("node-fetch-h2");
-const fetch = require("node-fetch");
-const { context } = require("fetch-h2");
+let { context, fetch: fetch2, disconnect } = require("fetch-h2");
 const { get } = require("http2-client");
-const { fetch: fetch2, disconnect } = context({
-  httpProtocol: "http1",
-  http1: { maxSockets: 6 },
-});
+
+if (0) {
+  const ctx = context({
+    httpProtocol: "http1",
+    http1: { maxSockets: 6 },
+  });
+  fetch2 = ctx.fetch;
+  disconnect = ctx.disconnect;
+}
+
 require("events").EventEmitter.setMaxListeners(0);
 
 const arg = process.argv?.[2];
