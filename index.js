@@ -1,8 +1,12 @@
 const data = require("./data.json");
 const fetch_h2 = require("node-fetch-h2");
 const fetch = require("node-fetch");
-const { fetch: fetch2, disconnect } = require("fetch-h2");
+const { context } = require("fetch-h2");
 const { get } = require("http2-client");
+const { fetch: fetch2, disconnect } = context({
+  httpProtocol: "http1",
+  http1: { maxSockets: 6 },
+});
 require("events").EventEmitter.setMaxListeners(0);
 
 const arg = process.argv?.[2];
@@ -59,7 +63,7 @@ function req(url) {
             console.error(
               arg,
               path[path.length - 1],
-              `body too small: ${text.length}`,
+              `body too small: ${res.status} ${text.length}`,
               text
             );
             fail++;
@@ -74,6 +78,7 @@ function req(url) {
       return url;
     })
     .catch((e) => {
+      fail++;
       console.error(e);
       return url;
     });
@@ -108,7 +113,11 @@ async function runParallel() {
   }, 10000);
   while (true) {
     try {
-      const res = await Promise.all(Object.values(data).map((url) => req(url)));
+      const res = await Promise.all(
+        Object.values(data)
+          .slice(0, 2)
+          .map((url) => req(url))
+      );
       disconnect(res[0]);
     } catch (e) {
       console.log(e);
